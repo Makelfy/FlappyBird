@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class GameHandler : MonoBehaviour
 {
+
+    [SerializeField] private Player player;
+
     private enum State
     {
         WaitingToStart,
@@ -18,7 +21,16 @@ public class GameHandler : MonoBehaviour
         state = State.WaitingToStart;
     }
 
-    // Update is called once per frame
+    private void Start()
+    {
+        player.PlayerCollided += Player_PlayerCollided;
+    }
+
+    private void Player_PlayerCollided(object sender, System.EventArgs e)
+    {
+        state = State.GameOver;
+    }
+
     void Update()
     {
         switch(state)
@@ -38,12 +50,13 @@ public class GameHandler : MonoBehaviour
                 }
                 break;
             case State.GamePlaying:
-                if(!Movement.Instance.IsAlive())
+                if(!Player.Instance.IsAlive())
                 {
                     state = State.GameOver;
                 }
                 break;
             case State.GameOver:
+                Debug.Log("Game is Over!!");
                 break;
         }
     }
