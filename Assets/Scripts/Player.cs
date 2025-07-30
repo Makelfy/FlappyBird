@@ -59,12 +59,16 @@ public class Player : MonoBehaviour
 
     public bool IsAlive()
     {
-        float playerRadius = 1.1f;
+        float playerRadius = 0.5f;
         isCollided = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(playerRadius, playerRadius), CapsuleDirection2D.Horizontal, 0, groundLayer);
 
         if (isCollided)
         {
             playerHealth -= 1;
+        }
+
+        if (playerHealth <= 0)
+        {
             PlayerCollided?.Invoke(this, EventArgs.Empty);
         }
 
