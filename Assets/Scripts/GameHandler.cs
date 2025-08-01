@@ -1,7 +1,12 @@
+using System;
 using UnityEngine;
 
 public class GameHandler : MonoBehaviour
 {
+
+    public event EventHandler<int> HealthReduced;
+    public event EventHandler GameOver;
+
 
     [SerializeField] private Player player;
 
@@ -10,6 +15,7 @@ public class GameHandler : MonoBehaviour
         WaitingToStart,
         CountdownToStart,
         GamePlaying,
+        PlayerCollided,
         GameOver,
     }
     private State state;
@@ -26,9 +32,17 @@ public class GameHandler : MonoBehaviour
         player.PlayerCollided += Player_PlayerCollided;
     }
 
-    private void Player_PlayerCollided(object sender, System.EventArgs e)
+    private void Player_PlayerCollided(object sender, int e)
     {
-        state = State.GameOver;
+        HealthReduced?.Invoke(this, e);
+        if (e > 0)
+        {
+            state = State.PlayerCollided;
+        }
+        else
+        {
+            state = State.GameOver;
+        }
     }
 
     void Update()
@@ -50,12 +64,11 @@ public class GameHandler : MonoBehaviour
                 }
                 break;
             case State.GamePlaying:
-                if(!Player.Instance.IsAlive())
-                {
-                    state = State.GameOver;
-                }
+                break;
+            case State.PlayerCollided:
                 break;
             case State.GameOver:
+                GameOver?.Invoke(this, EventArgs.Empty);
                 Debug.Log("Game is Over!!");
                 break;
         }
