@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     int playerHealth = 3;
     bool isPlaying = true;
+    bool isJumping = false;
+    bool isVelocityYPositive = false;
     Vector3 startingPoint = new Vector3(-12, 5 ,0); 
 
     bool isCollided;
@@ -56,11 +58,19 @@ public class Player : MonoBehaviour
     {
         if (isPlaying)
         {
+            isVelocityYPositive = rb.linearVelocityY > 0;
             if (Input.GetButtonDown("Jump"))
             {
+                isJumping = true;
+
                 rb.linearVelocityY = 0;
                 rb.linearVelocityY += jumpPower;
             }
+            else if (!isVelocityYPositive)
+            {
+                isJumping = false;
+            }
+
             rb.linearVelocityY -= gravityMultiplier;
 
             if (rb.linearVelocityY > jumpMax)
@@ -90,6 +100,11 @@ public class Player : MonoBehaviour
         }
 
         return playerHealth > 0;
+    }
+
+    public bool IsJumping()
+    {
+        return isJumping;
     }
 
 }
