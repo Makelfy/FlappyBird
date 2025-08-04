@@ -4,9 +4,9 @@ public class Grid : MonoBehaviour
 {
     [SerializeField] private GameHandler gameHandler;
     [SerializeField] private float moveSpeedX = 1f;
+    [SerializeField] private Player player;
 
     Vector3 startingPoint = new Vector3(0,0,0);
-    bool isPlaying = true;
 
     private void Start()
     {
@@ -17,7 +17,6 @@ public class Grid : MonoBehaviour
     private void GameHandler_GameOver(object sender, System.EventArgs e)
     {
         transform.position = startingPoint;
-        isPlaying = false;
     }
 
     private void GameHandler_HealthReduced(object sender, int e)
@@ -27,7 +26,7 @@ public class Grid : MonoBehaviour
 
     void Update()
     {
-        if (isPlaying)
+        if (player.IsPlaying())
         {
             Vector3 moveVector = new Vector3(moveSpeedX, 0, 0);
             transform.position += moveVector * Time.deltaTime;

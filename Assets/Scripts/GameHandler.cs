@@ -6,6 +6,8 @@ public class GameHandler : MonoBehaviour
 
     public event EventHandler<int> HealthReduced;
     public event EventHandler GameOver;
+    public event EventHandler WaitingState;
+    public event EventHandler GamePlayingState;
 
 
     [SerializeField] private Player player;
@@ -13,9 +15,7 @@ public class GameHandler : MonoBehaviour
     private enum State
     {
         WaitingToStart,
-        CountdownToStart,
         GamePlaying,
-        PlayerCollided,
         GameOver,
     }
     private State state;
@@ -30,6 +30,15 @@ public class GameHandler : MonoBehaviour
     private void Start()
     {
         player.PlayerCollided += Player_PlayerCollided;
+        player.PlayerStarted += Player_PlayerStarted;
+    }
+
+    private void Player_PlayerStarted(object sender, EventArgs e)
+    {
+        if (state == State.WaitingToStart)
+        {
+            state = State.GamePlaying;
+        }
     }
 
     private void Player_PlayerCollided(object sender, int e)
@@ -37,7 +46,7 @@ public class GameHandler : MonoBehaviour
         HealthReduced?.Invoke(this, e);
         if (e > 0)
         {
-            state = State.PlayerCollided;
+            state = State.WaitingToStart;
         }
         else
         {
@@ -50,27 +59,15 @@ public class GameHandler : MonoBehaviour
         switch(state)
         {
             case State.WaitingToStart:
-                waitingToStartTimer -= Time.deltaTime;
-                if (waitingToStartTimer < 0f)
-                {
-                    state = State.CountdownToStart;
-                }
-                break;
-            case State.CountdownToStart:
-                countdownToStartTimer -= Time.deltaTime;
-                if (countdownToStartTimer < 0f)
-                {
-                    state = State.GamePlaying;
-                }
+                WaitingState?.Invoke(this, EventArgs.Empty);
                 break;
             case State.GamePlaying:
-                break;
-            case State.PlayerCollided:
+                GamePlayingState?.Invoke(this, EventArgs.Empty);
                 break;
             case State.GameOver:
                 GameOver?.Invoke(this, EventArgs.Empty);
-                Debug.Log("Game is Over!!");
                 break;
         }
     }
+
 }

@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
 
     public event EventHandler<int> PlayerCollided;
-
+    public event EventHandler PlayerStarted;
 
     public static Player Instance { get; private set; }
 
@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
 
     Rigidbody2D rb;
     int playerHealth = 3;
-    bool isPlaying = true;
+    bool isPlaying = false;
     bool isJumping = false;
     bool isVelocityYPositive = false;
     Vector3 startingPoint = new Vector3(-12, 5 ,0); 
@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
 
     private void GameHandler_HealthReduced(object sender, int e)
     {
+        isPlaying = false;
         transform.position = startingPoint;
     }
 
@@ -56,6 +57,13 @@ public class Player : MonoBehaviour
 
     public void Move()
     {
+        if (Input.GetButtonDown("Jump") && isPlaying == false)
+        {
+            isPlaying = true;
+            PlayerStarted?.Invoke(this, EventArgs.Empty);
+
+            rb.linearVelocityY += jumpPower;
+        }
         if (isPlaying)
         {
             isVelocityYPositive = rb.linearVelocityY > 0;
@@ -105,6 +113,11 @@ public class Player : MonoBehaviour
     public bool IsJumping()
     {
         return isJumping;
+    }
+
+    public bool IsPlaying()
+    {
+        return isPlaying;
     }
 
 }
