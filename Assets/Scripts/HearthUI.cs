@@ -14,6 +14,7 @@ public class HearthUI : MonoBehaviour
 
     private void GameHandler_HealthReduced(object sender, int e)
     {
+        /*
         if (e == 2)
         {
             hearth3.gameObject.SetActive(false);
@@ -21,13 +22,11 @@ public class HearthUI : MonoBehaviour
         if (e == 1)
         {
             hearth2.gameObject.SetActive(false);
-            hearth3.gameObject.SetActive(false);
         }
         if (e == 0)
         {
             hearth1.gameObject.SetActive(false);
-            hearth2.gameObject.SetActive(false);
-            hearth3.gameObject.SetActive(false);
         }
+        */
     }
 }
