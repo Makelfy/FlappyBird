@@ -1,31 +1,31 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-public class GameOverUI : MonoBehaviour
+
+public class ScoreUI : MonoBehaviour
 {
-
-    public event EventHandler RestartGame;
-
     [SerializeField] private GameHandler gameHandler;
-    [SerializeField] private Player player;
     [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private Player player;
 
     private void Start()
     {
-        gameObject.SetActive(false);
+        gameHandler.GameRestarted += GameHandler_GameRestarted;
         gameHandler.GameOver += GameHandler_GameOver;
     }
 
     private void GameHandler_GameOver(object sender, System.EventArgs e)
     {
-        text.text = "Max Score: " + player.MaxScore();
+        gameObject.SetActive(false);
+    }
+
+    private void GameHandler_GameRestarted(object sender, System.EventArgs e)
+    {
         gameObject.SetActive(true);
     }
 
-    public void RestartButton()
+    private void Update()
     {
-        gameObject.SetActive(false);
-        RestartGame?.Invoke(this, EventArgs.Empty);
+        text.text = "Score: " + player.CalculateScore();
     }
 }

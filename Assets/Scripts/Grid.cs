@@ -12,6 +12,12 @@ public class Grid : MonoBehaviour
     {
         gameHandler.HealthReduced += GameHandler_HealthReduced;
         gameHandler.GameOver += GameHandler_GameOver;
+        gameHandler.GameRestarted += GameHandler_GameRestarted;
+    }
+
+    private void GameHandler_GameRestarted(object sender, System.EventArgs e)
+    {
+        transform.position = startingPoint;
     }
 
     private void GameHandler_GameOver(object sender, System.EventArgs e)

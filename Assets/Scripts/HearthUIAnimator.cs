@@ -14,6 +14,12 @@ public class HearthUIAnimator : MonoBehaviour
     private void Start()
     {
         gameHandler.HealthReduced += GameHandler_HealthReduced;
+        gameHandler.GameRestarted += GameHandler_GameRestarted;
+    }
+
+    private void GameHandler_GameRestarted(object sender, System.EventArgs e)
+    {
+        animator.SetBool("IsActive", true);
     }
 
     private void GameHandler_HealthReduced(object sender, int e)

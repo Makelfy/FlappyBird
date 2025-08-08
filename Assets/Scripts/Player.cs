@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,9 +18,11 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private GameHandler gameHandler;
+    [SerializeField] private Transform grid;
 
     Rigidbody2D rb;
     int playerHealth = 3;
+    int maxScore = 0;
     bool isPlaying = false;
     bool isJumping = false;
     bool isVelocityYPositive = false;
@@ -34,6 +37,13 @@ public class Player : MonoBehaviour
 
         gameHandler.HealthReduced += GameHandler_HealthReduced;
         gameHandler.GameOver += GameHandler_GameOver;
+        gameHandler.GameRestarted += GameHandler_GameRestarted;
+    }
+
+    private void GameHandler_GameRestarted(object sender, EventArgs e)
+    {
+        isPlaying = false;
+        playerHealth = 3;
     }
 
     private void GameHandler_GameOver(object sender, EventArgs e)
@@ -55,7 +65,7 @@ public class Player : MonoBehaviour
         IsAlive();
     }
 
-    public void Move()
+    private void Move()
     {
         if (Input.GetButtonDown("Jump") && isPlaying == false)
         {
@@ -94,6 +104,30 @@ public class Player : MonoBehaviour
         {
             rb.linearVelocityY = 0;
         }
+    }
+
+    public int CalculateScore()
+    {
+        float score = startingPoint.x - grid.position.x;
+        if (score >= -1)
+        {
+            score = (score + 1) / 5 + 1;
+        }
+        else
+        {
+            score = 0;
+        }
+
+        if (score > maxScore)
+        {
+            maxScore = (int)score;
+        }
+
+        return (int)score;
+    }
+    public int MaxScore()
+    {
+        return maxScore;
     }
 
     public bool IsAlive()

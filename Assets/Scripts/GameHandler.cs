@@ -8,9 +8,10 @@ public class GameHandler : MonoBehaviour
     public event EventHandler GameOver;
     public event EventHandler WaitingState;
     public event EventHandler GamePlayingState;
-
+    public event EventHandler GameRestarted;
 
     [SerializeField] private Player player;
+    [SerializeField] private GameOverUI gameOverUI;
 
     private enum State
     {
@@ -31,6 +32,13 @@ public class GameHandler : MonoBehaviour
     {
         player.PlayerCollided += Player_PlayerCollided;
         player.PlayerStarted += Player_PlayerStarted;
+        gameOverUI.RestartGame += GameOverUI_RestartGame;
+    }
+
+    private void GameOverUI_RestartGame(object sender, EventArgs e)
+    {
+        GameRestarted?.Invoke(this, EventArgs.Empty);
+        state = State.WaitingToStart;
     }
 
     private void Player_PlayerStarted(object sender, EventArgs e)
